@@ -2,7 +2,7 @@
 
 Repositório focado em preparação para a OBI.
 
-# 📅 [Clique aqui para ver o Planner do Repositório](planner.md)
+### 📅 [Clique aqui para ver o Planner do Repositório](planner.md)
 
 ---
 
