@@ -10,8 +10,12 @@ public class Ex7 {
             nota = Console.readDouble();
             if (nota == -1) break;
 
-            soma += nota;
-            c++;
+            if (nota > 0){
+                soma += nota;
+                c++;
+            }else{
+                System.out.println("Insira uma nota valida!");
+            }
         }
 
         if (c > 0){
