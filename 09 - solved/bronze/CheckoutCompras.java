@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 /*
 🛒 O Desafio: Sistema de Checkout de E-Commerce com Cupom
 Você deve criar um programa que simule o carrinho de compras e o fechamento do pedido de uma loja online. O sistema deve calcular o valor final da compra aplicando regras de desconto e validando um cupom promocional.
@@ -13,20 +11,26 @@ Desconto por Volume de Compra: Se o valor final (após checar o cupom) for maior
 Brinde Especial: Se o valor final da compra (já com frete ou desconto) passar de R$ 1.000,00, exiba uma mensagem especial: "Parabéns! Você ganhou um brinde exclusivo!".
 Saída: O programa principal (main) deve exibir o resumo final na tela: o valor original, se houve desconto do cupom, o valor do frete e o total a pagar.
 */
+import java.util.Scanner;
+
 public class CheckoutCompras {
 
     public record ResultadoCheckout(double valorFinal, boolean aplicouDesconto) {}
+
     public static void main(String[] args) {
-        double valor;
+        double valorOriginal;
         double valorFinal;
-        try (Scanner scanner = new Scanner(System.in)){
+        boolean aplicouDesconto;
+        double valorFrete = 0;
+
+        try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("--SISTEMA DE CHECKOUT DE COMPRAS--");
 
             while (true) {
                 System.out.print("\nInforme o valor total da compra: ");
-                valor = scanner.nextDouble();
+                valorOriginal = scanner.nextDouble();
 
-                if(valor <= 0) {
+                if (valorOriginal <= 0) {
                     System.out.println("[ERRO] O valor precisa ser maior que zero!");
                     continue;
                 }
@@ -37,31 +41,60 @@ public class CheckoutCompras {
             System.out.print("\nDigite o cupom de desconto (ou aperte Enter para nenhum): ");
             String cupom = scanner.nextLine();
 
-            ResultadoCheckout resultado = calcularPrecoFinal(valor, cupom);
+            ResultadoCheckout resultado = calcularPrecoFinal(valorOriginal, cupom);
+            valorFinal = resultado.valorFinal();
+            aplicouDesconto = resultado.aplicouDesconto();
+
+            if (valorFinal < 500) {
+                valorFrete = 20.0;
+            }
+
+            valorFinal += valorFrete;
         }
 
-        exibirResumo(valor, valorFinal, aplicouDesconto);
-
+        exibirResumo(valorOriginal, valorFinal, aplicouDesconto, valorFrete);
     }
 
-    static double calcularPrecoFinal(double valor, String cupom){
-        double valorFinal = 0;
-        boolean aplicouCupom = false;
-        if (cupom.equalsIgnoreCase("PROMO10")){
-            valorFinal = valor - (valor * 0.1);
+    static ResultadoCheckout calcularPrecoFinal(double valor, String cupom) {
+        double valorFinal;
+        boolean aplicouCupom;
+
+        if (cupom.trim().isEmpty()) {
+            valorFinal = valor;
+            aplicouCupom = false;
+        } else if (cupom.equalsIgnoreCase("PROMO10")) {
+            valorFinal = valor * 0.9;
             aplicouCupom = true;
-        }else {
-            System.out.println("CUPOM NÃO INFORMADO OU INCORRETO");
+        } else {
+            System.out.println("\n[AVISO] Cupom inválido ou expirado.");
             valorFinal = valor;
             aplicouCupom = false;
         }
         return new ResultadoCheckout(valorFinal, aplicouCupom);
     }
 
-    static void exibirResumo(double valorFinal, double valorInicial, boolean desconto){
-        System.out.println("-- RESUMO DO PEDIDO --");
+    static void exibirResumo(double valorOriginal, double valorFinal, boolean desconto, double valorFrete) {
+        System.out.println("\n-- RESUMO DO PEDIDO --");
 
-        System.out.print("\nVALOR ORIGINAL: " + valor);
-        System.out.print("\nVALOR DESCONTO");
+        System.out.printf("VALOR ORIGINAL: R$ %.2f%n", valorOriginal);
+
+        if (desconto) {
+            double totalDesconto = valorOriginal * 0.1;
+            System.out.printf("VALOR DESCONTO (PROMO10): R$ %.2f%n", totalDesconto);
+        } else {
+            System.out.println("CUPOM APLICADO: Nenhum");
+        }
+
+        if (valorFrete == 0) {
+            System.out.println("VALOR DO FRETE: Grátis");
+        } else {
+            System.out.printf("VALOR DO FRETE: R$ %.2f%n", valorFrete);
+        }
+
+        System.out.printf("VALOR FINAL DA COMPRA: R$ %.2f%n", valorFinal);
+
+        if (valorFinal > 1000) {
+            System.out.println("\n🎁 Parabéns! Você ganhou um brinde exclusivo!");
+        }
     }
 }
