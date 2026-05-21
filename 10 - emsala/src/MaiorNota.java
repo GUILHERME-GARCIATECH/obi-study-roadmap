@@ -6,21 +6,26 @@ public class MaiorNota {
         try (Scanner scanner = new Scanner(System.in)){
             System.out.println("--COMPARADORA DE NOTAS--");
 
-            System.out.print("\nQuantos notas você vai informar?\n");
-            byte numNotas = scanner.nextByte();
+            byte numNotas;
 
-            if (numNotas > 0) {
-                float[] notas = coletarNotas(numNotas, scanner);
+            while(true){
+                System.out.print("\nQuantos notas você vai informar?\n");
+                numNotas = scanner.nextByte();
 
-                System.out.println("Notas informadas: " + Arrays.toString(notas));
+                if (numNotas > 0) {
+                    break;
+                }
 
-                float notaMaior = verificarMaiorNota(notas);
-
-                System.out.println("MAIOR NOTA: " + notaMaior);
-            }else {
                 System.out.println("\nPrecisa informar uma ou mais notas!");
-                return;
             }
+
+            float[] notas = coletarNotas(numNotas, scanner);
+
+            System.out.println("Notas informadas: " + Arrays.toString(notas));
+
+            float notaMaior = verificarMaiorNota(notas);
+
+            System.out.println("MAIOR NOTA: " + notaMaior);
         }
     }
 
