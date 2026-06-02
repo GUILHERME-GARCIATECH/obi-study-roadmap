@@ -27,6 +27,7 @@ Saída:
 12
 
 */
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class baralho {
@@ -38,27 +39,26 @@ public class baralho {
             String paus
     ) {}
     public static void main(String[] args) {
-        checkoutResult result;
+        checkoutResult result = null;
         try(Scanner scanner = new Scanner(System.in)){
             System.out.println("--VALIDADOR DE BARALHO--");
 
             System.out.println("ENTRADA PADRÃO DDN:");
             String input = scanner.next();
 
-            if (input.length() > 3 || input.length() < 156){
+            if (input.length() > 3 && input.length() < 156){
                 result = deckChecker(input);
             }else {
                 System.out.println("ERRO: Entrada tem que ser maior que 3 e menor que 156");
             }
 
+            displayResult(input, result);
         }
 
     }
 
     static checkoutResult deckChecker(String input){
 
-        // Input: 11P01C02C01U02U03U04U
-        // Array gerado = partes = ["11P", "01C", "02C"];
         String[] parts = input.split("(?<=\\G.{3})");
 
         String[] copas = new String[13];
@@ -66,16 +66,73 @@ public class baralho {
         String[] ouros = new String[13];
         String[] paus = new String[13];
 
+        byte idxCopas = 0, idxEspadas = 0, idxOuros = 0, idxPaus = 0;
+
         for (String chunk : parts){
-            String nums = chunk.substring(0,1);
-            String nipe = chunk.substring(2);
+
+            String nums = chunk.substring(0,2);
+            String nipe = chunk.substring(2,3);
+
+            if (nipe.equals("C")) {
+                copas[idxCopas] = nums;
+                idxCopas++;
+            }else if (nipe.equals("E")) {
+                espadas[idxEspadas] = nums;
+                idxEspadas++;
+            } else if (nipe.equals("U")) {
+                ouros[idxOuros] = nums;
+                idxOuros++;
+            } else if (nipe.equals("P")) {
+                paus[idxPaus] = nums;
+                idxPaus++;
+            }
         }
 
-        String copas;
-        String espadas;
-        String ouros;
-        String paus;
+        String QtdCopas = "";
+        String QtdEspadas = "";
+        String QtdOuros = "";
+        String QtdPaus = "";
 
-        return new checkoutResult(copas, espadas, ouros, paus);
+
+        if (!hasRepetitions(copas)){
+            QtdCopas = Byte.toString(idxCopas);
+        }else {
+            QtdCopas = "erro";
+        }
+
+        if (!hasRepetitions(espadas)){
+            QtdEspadas = Byte.toString(idxEspadas);
+        }else {
+            QtdEspadas = "erro";
+        }
+
+        if (!hasRepetitions(ouros)){
+            QtdOuros = Byte.toString(idxOuros);
+        }else {
+            QtdOuros = "erro";
+        }
+
+        if (!hasRepetitions(paus)){
+            QtdPaus = Byte.toString(idxPaus);
+        }else {
+            QtdPaus = "erro";
+        }
+
+
+
+        return new checkoutResult(QtdCopas, QtdEspadas, QtdOuros, QtdPaus);
+    }
+
+    static boolean hasRepetitions(String[] array){
+        HashSet<String> vistos = new HashSet<>();
+
+        for (byte i = 0; i < array.length; i ++) {
+
+            if (!vistos.add(array[i])){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
