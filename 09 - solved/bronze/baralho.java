@@ -30,7 +30,7 @@ Saída:
 import java.util.HashSet;
 import java.util.Scanner;
 
-public class baralho {
+class baralho {
 
     public record checkoutResult(
             String copas,
@@ -41,18 +41,15 @@ public class baralho {
     public static void main(String[] args) {
         checkoutResult result = null;
         try(Scanner scanner = new Scanner(System.in)){
-            System.out.println("--VALIDADOR DE BARALHO--");
 
-            System.out.println("ENTRADA PADRÃO DDN:");
-            String input = scanner.next();
+            if (scanner.hasNext()){
+                String input = scanner.next();
 
-            if (input.length() > 3 && input.length() < 156){
-                result = deckChecker(input);
-            }else {
-                System.out.println("ERRO: Entrada tem que ser maior que 3 e menor que 156");
+                if (input.length() > 3 && input.length() < 156){
+                    result = deckChecker(input);
+                    displayResult(input, result);
+                }
             }
-
-            displayResult(input, result);
         }
 
     }
@@ -95,25 +92,25 @@ public class baralho {
 
 
         if (!hasRepetitions(copas)){
-            QtdCopas = Byte.toString(idxCopas);
+            QtdCopas = Byte.toString((byte)(13 - idxCopas));
         }else {
             QtdCopas = "erro";
         }
 
         if (!hasRepetitions(espadas)){
-            QtdEspadas = Byte.toString(idxEspadas);
+            QtdEspadas = Byte.toString((byte)(13 - idxEspadas));
         }else {
             QtdEspadas = "erro";
         }
 
         if (!hasRepetitions(ouros)){
-            QtdOuros = Byte.toString(idxOuros);
+            QtdOuros = Byte.toString((byte)(13 - idxOuros));
         }else {
             QtdOuros = "erro";
         }
 
         if (!hasRepetitions(paus)){
-            QtdPaus = Byte.toString(idxPaus);
+            QtdPaus = Byte.toString((byte)(13 - idxPaus));
         }else {
             QtdPaus = "erro";
         }
@@ -127,12 +124,20 @@ public class baralho {
         HashSet<String> vistos = new HashSet<>();
 
         for (byte i = 0; i < array.length; i ++) {
-
-            if (!vistos.add(array[i])){
-                return true;
+            if (array[i] != null){
+                if (!vistos.add(array[i])){
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    static void displayResult(String input, checkoutResult result){
+        System.out.println(result.copas);
+        System.out.println(result.espadas);
+        System.out.println(result.ouros);
+        System.out.println(result.paus);
     }
 }
