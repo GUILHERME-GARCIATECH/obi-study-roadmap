@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class Matriz04 {
     public static void main(String[] args) {
-        String[][] agenda = new String[30][24];
-        try(Scanner planner = new Scanner(System.in)){
+        String[][] planner = new String[30][24];
+        try(Scanner scanner = new Scanner(System.in)){
             while(true) {
                 System.out.println("----- Agenda Pessoal -----");
                 System.out.println("\nSelecione a opção desejada: ");
@@ -14,19 +14,30 @@ public class Matriz04 {
                 System.out.println("3 - Fechar agenda");
                 System.out.print("\nInsira a opção desejada: ");
 
-                byte input = planner.nextByte();
+                while (!scanner.hasNextByte()){
+                    System.out.println("Erro: Entrada inválida! Digite um número entre 1 e 3.");
+                    scanner.next();
+                    System.out.print("\nInsira a opção desejada: ");
+                }
+
+                byte input = scanner.nextByte();
+                scanner.nextLine();
+
                 if (input == 1){
-                    insertAppointment(agenda, planner);
+                    insertAppointment(planner, scanner);
                     System.out.println("Pressione ENTER para continuar...");
-                    planner.nextLine();
+                    scanner.nextLine();
                 }
-                if (input == 2){
-                    consultAppointment(agenda, planner);
+                else if (input == 2){
+                    consultAppointment(planner, scanner);
                     System.out.println("Pressione ENTER para continuar...");
-                    planner.nextLine();
+                    scanner.nextLine();
                 }
-                if (input == 3){
+                else if (input == 3){
+                    System.out.println("Saindo...");
                     return;
+                }else {
+                    System.out.println("Opção invalida! Tente novamente\n");
                 }
             }
         }
